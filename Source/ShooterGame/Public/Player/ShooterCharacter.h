@@ -30,6 +30,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//更新相机位置
+	void OnCameraUpdata(const FVector& CameraLocation,const FRotator& CameraRotation);
+
 	//初始化组件 调用
 	virtual void PostInitializeComponents();
 
@@ -60,11 +63,12 @@ public:
 protected:
 
 	/*UPROPERTY(EditAnywhere, category = "Camera")*/
-	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class UCameraComponent* Camera1P;
+// 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+// 		class UCameraComponent* Camera1P;
 
 	/** The main skeletal mesh associated with this Character (optional sub-object). */
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+//	UPROPERTY(EditDefaultsOnly, Category = Character)
 		class USkeletalMeshComponent* Mesh1P;
 
 	UPROPERTY(EditDefaultsOnly , Category = Weapon )

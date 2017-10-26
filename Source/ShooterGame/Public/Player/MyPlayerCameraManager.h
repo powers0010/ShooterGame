@@ -14,7 +14,8 @@ class SHOOTERGAME_API AMyPlayerCameraManager : public APlayerCameraManager
 {
 	GENERATED_BODY()
 	
-	
+public:
+	virtual void UpdateCamera(float DeltaTime) override;
 	
 	
 };

@@ -16,28 +16,10 @@ AShooterCharacter::AShooterCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//Camera
-	Camera1P = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera1P"));
-	Camera1P->SetupAttachment(GetCapsuleComponent());
-	Camera1P->SetRelativeLocation(FVector(0.f, 0.f, BaseEyeHeight));
-
-	//第一人称 模型
-	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh1P"));
-	Mesh1P->SetupAttachment(Camera1P);
-	//仅自己可见 //不接受 贴花投射	//不投影
-	Mesh1P->bOnlyOwnerSee = true;
-	Mesh1P->bOwnerNoSee = false;
-	Mesh1P->bReceivesDecals = false;
-	Mesh1P->bCastDynamicShadow = false;
-	//骨骼动画的pose更新 只发生在渲染时
-	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
-	//Mesh1P 更新组 设置为 在物理之前更新的更新组
-	Mesh1P->PrimaryComponentTick.TickGroup = TG_PrePhysics;
-	//关闭 第一人称碰撞
-	Mesh1P->SetCollisionObjectType(ECC_Pawn);
-	Mesh1P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh1P->SetCollisionResponseToChannels(ECR_Ignore);
-	Mesh1P->SetRelativeLocation(FVector(0.f, 0.f, -BaseEyeHeight-GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
-
+// 	Camera1P = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera1P"));
+// 	Camera1P->SetupAttachment(GetCapsuleComponent());
+// 	Camera1P->SetRelativeLocation(FVector(0.f, 0.f, BaseEyeHeight));
+	
 	//Mesh碰撞	//第三人称模型
 	//自己不可见 //不接受 贴花投射
 	GetMesh()->bOnlyOwnerSee = false;
@@ -54,6 +36,25 @@ AShooterCharacter::AShooterCharacter()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_PICKUP, ECR_Ignore);
+	
+	//第一人称 模型
+	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh1P"));
+	/*	Mesh1P->SetupAttachment(Camera1P);*/
+	Mesh1P->SetupAttachment(GetCapsuleComponent());
+	//仅自己可见 //不接受 贴花投射	//不投影
+	Mesh1P->bOnlyOwnerSee = true;
+	Mesh1P->bOwnerNoSee = false;
+	Mesh1P->bReceivesDecals = false;
+	Mesh1P->bCastDynamicShadow = false;
+	//骨骼动画的pose更新 只发生在渲染时
+	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
+	//Mesh1P 更新组 设置为 在物理之前更新的更新组
+	Mesh1P->PrimaryComponentTick.TickGroup = TG_PrePhysics;
+	//关闭 第一人称碰撞
+	Mesh1P->SetCollisionObjectType(ECC_Pawn);
+	Mesh1P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Mesh1P->SetCollisionResponseToChannels(ECR_Ignore);
+	//	Mesh1P->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 
 	bIsTargeting = false;
 }
@@ -87,6 +88,37 @@ void AShooterCharacter::PostInitializeComponents()
 	}
 }
 
+void AShooterCharacter::OnCameraUpdata(const FVector& CameraLocation, const FRotator& CameraRotation)
+{
+	
+	USkeletalMeshComponent* DefaultMesh1P = Cast<USkeletalMeshComponent>(GetClass()->GetDefaultSubobjectByName(TEXT("Mesh1P")));
+	if (!DefaultMesh1P)
+	{
+		return;
+	}
+
+	//获取默认Mesh1P组件相对于Root的变换矩阵 
+	const FMatrix DefaultMesh1PLS = FRotationTranslationMatrix(DefaultMesh1P->RelativeRotation, DefaultMesh1P->RelativeLocation);
+
+	//本地空间到世界空间的转化矩阵
+	const FMatrix LocalToWorld = ActorToWorld().ToMatrixWithScale();
+
+	//相机在世界坐标的旋转矩阵 Yaw 和Pitch
+	const FRotator CameraYaw(0.f, CameraRotation.Yaw, 0.f);
+	const FRotator CameraYawAndPitch(CameraRotation.Pitch, CameraRotation.Yaw, 0.f);
+
+	//camera相对于root的变换 本地空间
+	const FMatrix CameraToRootInLS = FRotationTranslationMatrix(CameraYawAndPitch, CameraLocation)*LocalToWorld.Inverse();
+
+	//camera相对于root在Yaw的变换 本地空间
+	const FMatrix CameraToRootYawInLS = FRotationTranslationMatrix(CameraYaw, CameraLocation)*LocalToWorld.Inverse();
+
+	//计算Mesh1P的相对坐标
+	const FMatrix Mesh1PRelative = DefaultMesh1PLS * CameraToRootYawInLS.Inverse() * CameraToRootInLS ;
+
+	//设置坐标
+	Mesh1P->SetRelativeLocationAndRotation(Mesh1PRelative.GetOrigin(), Mesh1PRelative.Rotator());
+}
 
 // Called to bind functionality to input
 void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

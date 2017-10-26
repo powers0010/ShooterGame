@@ -115,7 +115,6 @@ DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(AShooterCharacter); \
 
 
 #define ShooterGame_Source_ShooterGame_Public_Player_ShooterCharacter_h_16_PRIVATE_PROPERTY_OFFSET \
-	FORCEINLINE static uint32 __PPO__Camera1P() { return STRUCT_OFFSET(AShooterCharacter, Camera1P); } \
 	FORCEINLINE static uint32 __PPO__Mesh1P() { return STRUCT_OFFSET(AShooterCharacter, Mesh1P); } \
 	FORCEINLINE static uint32 __PPO__WeaponClass() { return STRUCT_OFFSET(AShooterCharacter, WeaponClass); } \
 	FORCEINLINE static uint32 __PPO__CurrentWeapon() { return STRUCT_OFFSET(AShooterCharacter, CurrentWeapon); } \

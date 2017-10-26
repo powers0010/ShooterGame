@@ -25,7 +25,6 @@ void EmptyLinkFunctionForGeneratedCodeShooterCharacter() {}
 	SHOOTERGAME_API UClass* Z_Construct_UClass_AWeapon_NoRegister();
 	COREUOBJECT_API UClass* Z_Construct_UClass_UClass();
 	ENGINE_API UClass* Z_Construct_UClass_USkeletalMeshComponent_NoRegister();
-	ENGINE_API UClass* Z_Construct_UClass_UCameraComponent_NoRegister();
 // End Cross Module References
 	void AShooterCharacter::StaticRegisterNativesAShooterCharacter()
 	{
@@ -131,7 +130,6 @@ void EmptyLinkFunctionForGeneratedCodeShooterCharacter() {}
 				UProperty* NewProp_CurrentWeapon = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("CurrentWeapon"), RF_Public|RF_Transient|RF_MarkAsNative) UObjectProperty(CPP_PROPERTY_BASE(CurrentWeapon, AShooterCharacter), 0x0020080000020001, Z_Construct_UClass_AWeapon_NoRegister());
 				UProperty* NewProp_WeaponClass = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("WeaponClass"), RF_Public|RF_Transient|RF_MarkAsNative) UClassProperty(CPP_PROPERTY_BASE(WeaponClass, AShooterCharacter), 0x0024080000010001, Z_Construct_UClass_AWeapon_NoRegister(), Z_Construct_UClass_UClass());
 				UProperty* NewProp_Mesh1P = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("Mesh1P"), RF_Public|RF_Transient|RF_MarkAsNative) UObjectProperty(CPP_PROPERTY_BASE(Mesh1P, AShooterCharacter), 0x00200800000a001d, Z_Construct_UClass_USkeletalMeshComponent_NoRegister());
-				UProperty* NewProp_Camera1P = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("Camera1P"), RF_Public|RF_Transient|RF_MarkAsNative) UObjectProperty(CPP_PROPERTY_BASE(Camera1P, AShooterCharacter), 0x00200800000a001d, Z_Construct_UClass_UCameraComponent_NoRegister());
 				OuterClass->AddFunctionToFunctionMapWithOverriddenName(Z_Construct_UFunction_AShooterCharacter_GetAimOffsets(), "GetAimOffsets"); // 878658004
 				OuterClass->AddFunctionToFunctionMapWithOverriddenName(Z_Construct_UFunction_AShooterCharacter_GetIsTargeting(), "GetIsTargeting"); // 242047036
 				OuterClass->AddFunctionToFunctionMapWithOverriddenName(Z_Construct_UFunction_AShooterCharacter_SetIsTargeting(), "SetIsTargeting"); // 3074073386
@@ -155,19 +153,14 @@ void EmptyLinkFunctionForGeneratedCodeShooterCharacter() {}
 				MetaData->SetValue(NewProp_Mesh1P, TEXT("Category"), TEXT("Character"));
 				MetaData->SetValue(NewProp_Mesh1P, TEXT("EditInline"), TEXT("true"));
 				MetaData->SetValue(NewProp_Mesh1P, TEXT("ModuleRelativePath"), TEXT("Public/Player/ShooterCharacter.h"));
-				MetaData->SetValue(NewProp_Mesh1P, TEXT("ToolTip"), TEXT("The main skeletal mesh associated with this Character (optional sub-object)."));
-				MetaData->SetValue(NewProp_Camera1P, TEXT("AllowPrivateAccess"), TEXT("true"));
-				MetaData->SetValue(NewProp_Camera1P, TEXT("Category"), TEXT("Character"));
-				MetaData->SetValue(NewProp_Camera1P, TEXT("EditInline"), TEXT("true"));
-				MetaData->SetValue(NewProp_Camera1P, TEXT("ModuleRelativePath"), TEXT("Public/Player/ShooterCharacter.h"));
-				MetaData->SetValue(NewProp_Camera1P, TEXT("ToolTip"), TEXT("UPROPERTY(EditAnywhere, category = \"Camera\")"));
+				MetaData->SetValue(NewProp_Mesh1P, TEXT("ToolTip"), TEXT("The main skeletal mesh associated with this Character (optional sub-object). //        UPROPERTY(EditDefaultsOnly, Category = Character)"));
 #endif
 			}
 		}
 		check(OuterClass->GetClass());
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AShooterCharacter, 525969609);
+	IMPLEMENT_CLASS(AShooterCharacter, 1611494812);
 	static FCompiledInDefer Z_CompiledInDefer_UClass_AShooterCharacter(Z_Construct_UClass_AShooterCharacter, &AShooterCharacter::StaticClass, TEXT("/Script/ShooterGame"), TEXT("AShooterCharacter"), false, nullptr, nullptr, nullptr);
 	DEFINE_VTABLE_PTR_HELPER_CTOR(AShooterCharacter);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
