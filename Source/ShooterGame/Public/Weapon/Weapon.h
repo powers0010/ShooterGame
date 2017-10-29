@@ -26,16 +26,24 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	AShooterCharacter* PawnOwner;
+
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class USkeletalMeshComponent* Mesh1P;
+	class USkeletalMeshComponent* Mesh1P;
 
 	//生成子弹的SocketName
 	UPROPERTY(EditDefaultsOnly , Category = Weapon)
-		FName MuzzleAttachPoint;
+	FName MuzzleAttachPoint;
 	
 	//开枪音效
 	UPROPERTY(EditDefaultsOnly, Category = Sound)
-		USoundCue* FireSound;
+	USoundCue* FireSound;
+
+	//子弹数量
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	int32 AmmoCount;
+
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -44,18 +52,15 @@ public:
 	//获取瞄准方向 //子弹发射方向 //控制器方向
 	FVector GetAdjustAim();
 
-	//开火  //定义接口
+	//----------【开火】--------------
 	void StartFire();
 	virtual void SimulateWeaponFire();
 	virtual void FireWeapon();
 	UAudioComponent* PlayWeaponSound(USoundCue* FireSound);
-
-
 	//获取子弹 生成位置
 	FVector GetMuzzleLocation();
-
-
-private:
-
-	AShooterCharacter* PawnOwner;
+	
+	//获取子弹数量
+	int32 GetCurrentAmmoAmount();
+	int32 GetMaxAmmoAmount();
 };

@@ -107,7 +107,7 @@ static struct FScriptStruct_ShooterGame_StaticRegisterNativesFProjectileWeaponDa
 		check(OuterClass->GetClass());
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AWeapon_Projectile, 175186548);
+	IMPLEMENT_CLASS(AWeapon_Projectile, 792041100);
 	static FCompiledInDefer Z_CompiledInDefer_UClass_AWeapon_Projectile(Z_Construct_UClass_AWeapon_Projectile, &AWeapon_Projectile::StaticClass, TEXT("/Script/ShooterGame"), TEXT("AWeapon_Projectile"), false, nullptr, nullptr, nullptr);
 	DEFINE_VTABLE_PTR_HELPER_CTOR(AWeapon_Projectile);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

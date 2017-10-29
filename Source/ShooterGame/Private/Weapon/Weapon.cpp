@@ -11,7 +11,7 @@
 
 
 // Sets default values
-AWeapon::AWeapon()
+AWeapon::AWeapon() : AmmoCount(50)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -94,8 +94,12 @@ FVector AWeapon::GetMuzzleLocation()
 
 void AWeapon::StartFire()
 {
-	SimulateWeaponFire();
-	FireWeapon();
+	if (AmmoCount>0)
+	{
+		SimulateWeaponFire();
+		FireWeapon();
+		AmmoCount--;
+	}
 }
 void AWeapon::SimulateWeaponFire()
 {
@@ -120,4 +124,12 @@ UAudioComponent* AWeapon::PlayWeaponSound(USoundCue* FireSound)
 	return AC;
 }
 
+int32 AWeapon::GetCurrentAmmoAmount()
+{
+	return AmmoCount;
+}
 
+int32 AWeapon::GetMaxAmmoAmount()
+{
+	return GetClass()->GetDefaultObject<AWeapon>()->AmmoCount;
+}

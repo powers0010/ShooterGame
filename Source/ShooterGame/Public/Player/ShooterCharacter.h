@@ -60,6 +60,12 @@ public:
 		bool GetIsTargeting() const;
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 		void SetIsTargeting(bool NewIsTarget);
+
+	int32 GetCurHealth() const;
+	int32 GetMaxHealth() const;
+
+	AWeapon* GetCurrentWeapon();
+
 protected:
 
 	/*UPROPERTY(EditAnywhere, category = "Camera")*/
@@ -80,7 +86,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 		FName WeaponAttachPoint;
 
-	bool bIsTargeting;
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+		bool bIsTargeting;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Health)
 		float Health;

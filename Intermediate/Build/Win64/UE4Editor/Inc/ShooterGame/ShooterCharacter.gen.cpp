@@ -126,6 +126,8 @@ void EmptyLinkFunctionForGeneratedCodeShooterCharacter() {}
 				OuterClass->LinkChild(Z_Construct_UFunction_AShooterCharacter_SetIsTargeting());
 
 				UProperty* NewProp_Health = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("Health"), RF_Public|RF_Transient|RF_MarkAsNative) UFloatProperty(CPP_PROPERTY_BASE(Health, AShooterCharacter), 0x0020080000000005);
+				CPP_BOOL_PROPERTY_BITMASK_STRUCT(bIsTargeting, AShooterCharacter);
+				UProperty* NewProp_bIsTargeting = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("bIsTargeting"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(bIsTargeting, AShooterCharacter), 0x0020080000020001, CPP_BOOL_PROPERTY_BITMASK(bIsTargeting, AShooterCharacter), sizeof(bool), true);
 				UProperty* NewProp_WeaponAttachPoint = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("WeaponAttachPoint"), RF_Public|RF_Transient|RF_MarkAsNative) UNameProperty(CPP_PROPERTY_BASE(WeaponAttachPoint, AShooterCharacter), 0x0020080000010001);
 				UProperty* NewProp_CurrentWeapon = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("CurrentWeapon"), RF_Public|RF_Transient|RF_MarkAsNative) UObjectProperty(CPP_PROPERTY_BASE(CurrentWeapon, AShooterCharacter), 0x0020080000020001, Z_Construct_UClass_AWeapon_NoRegister());
 				UProperty* NewProp_WeaponClass = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("WeaponClass"), RF_Public|RF_Transient|RF_MarkAsNative) UClassProperty(CPP_PROPERTY_BASE(WeaponClass, AShooterCharacter), 0x0024080000010001, Z_Construct_UClass_AWeapon_NoRegister(), Z_Construct_UClass_UClass());
@@ -143,6 +145,8 @@ void EmptyLinkFunctionForGeneratedCodeShooterCharacter() {}
 				MetaData->SetValue(OuterClass, TEXT("ModuleRelativePath"), TEXT("Public/Player/ShooterCharacter.h"));
 				MetaData->SetValue(NewProp_Health, TEXT("Category"), TEXT("Health"));
 				MetaData->SetValue(NewProp_Health, TEXT("ModuleRelativePath"), TEXT("Public/Player/ShooterCharacter.h"));
+				MetaData->SetValue(NewProp_bIsTargeting, TEXT("Category"), TEXT("Weapon"));
+				MetaData->SetValue(NewProp_bIsTargeting, TEXT("ModuleRelativePath"), TEXT("Public/Player/ShooterCharacter.h"));
 				MetaData->SetValue(NewProp_WeaponAttachPoint, TEXT("Category"), TEXT("Weapon"));
 				MetaData->SetValue(NewProp_WeaponAttachPoint, TEXT("ModuleRelativePath"), TEXT("Public/Player/ShooterCharacter.h"));
 				MetaData->SetValue(NewProp_CurrentWeapon, TEXT("Category"), TEXT("Weapon"));
@@ -160,7 +164,7 @@ void EmptyLinkFunctionForGeneratedCodeShooterCharacter() {}
 		check(OuterClass->GetClass());
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AShooterCharacter, 1611494812);
+	IMPLEMENT_CLASS(AShooterCharacter, 3127765812);
 	static FCompiledInDefer Z_CompiledInDefer_UClass_AShooterCharacter(Z_Construct_UClass_AShooterCharacter, &AShooterCharacter::StaticClass, TEXT("/Script/ShooterGame"), TEXT("AShooterCharacter"), false, nullptr, nullptr, nullptr);
 	DEFINE_VTABLE_PTR_HELPER_CTOR(AShooterCharacter);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

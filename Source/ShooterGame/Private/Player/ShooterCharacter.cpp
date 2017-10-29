@@ -11,7 +11,7 @@
 
 
 // Sets default values
-AShooterCharacter::AShooterCharacter()
+AShooterCharacter::AShooterCharacter():Health(1000)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -221,7 +221,24 @@ float AShooterCharacter::TakeDamage(float Damage, struct FDamageEvent const& Dam
 	if (ActualDamage>0.f)
 	{
  		Health -= ActualDamage;
+		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
  	}
 
 	return ActualDamage;
+}
+
+
+int32 AShooterCharacter::GetCurHealth() const
+{
+	return Health;
+}
+
+int32 AShooterCharacter::GetMaxHealth() const
+{
+	return GetClass()->GetDefaultObject<AShooterCharacter>()->Health;
+}
+
+AWeapon* AShooterCharacter::GetCurrentWeapon()
+{
+	return CurrentWeapon ? CurrentWeapon : nullptr;
 }

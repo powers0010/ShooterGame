@@ -40,6 +40,7 @@ void EmptyLinkFunctionForGeneratedCodeShooterGameMode() {}
 				OuterClass->ClassFlags |= (EClassFlags)0x2090028Cu;
 
 
+				UProperty* NewProp_GameRoundTime = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("GameRoundTime"), RF_Public|RF_Transient|RF_MarkAsNative) UIntProperty(CPP_PROPERTY_BASE(GameRoundTime, AShooterGameMode), 0x0020080000004000);
 				OuterClass->ClassConfigName = FName(TEXT("Game"));
 				static TCppClassTypeInfo<TCppClassTypeTraits<AShooterGameMode> > StaticCppClassTypeInfo;
 				OuterClass->SetCppTypeInfo(&StaticCppClassTypeInfo);
@@ -50,13 +51,15 @@ void EmptyLinkFunctionForGeneratedCodeShooterGameMode() {}
 				MetaData->SetValue(OuterClass, TEXT("IncludePath"), TEXT("Online/ShooterGameMode.h"));
 				MetaData->SetValue(OuterClass, TEXT("ModuleRelativePath"), TEXT("Public/Online/ShooterGameMode.h"));
 				MetaData->SetValue(OuterClass, TEXT("ShowCategories"), TEXT("Input|MouseInput Input|TouchInput"));
+				MetaData->SetValue(NewProp_GameRoundTime, TEXT("ModuleRelativePath"), TEXT("Public/Online/ShooterGameMode.h"));
+				MetaData->SetValue(NewProp_GameRoundTime, TEXT("ToolTip"), TEXT("\x04bb????\x03f7????\x02b1??"));
 #endif
 			}
 		}
 		check(OuterClass->GetClass());
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AShooterGameMode, 855157501);
+	IMPLEMENT_CLASS(AShooterGameMode, 1435177714);
 	static FCompiledInDefer Z_CompiledInDefer_UClass_AShooterGameMode(Z_Construct_UClass_AShooterGameMode, &AShooterGameMode::StaticClass, TEXT("/Script/ShooterGame"), TEXT("AShooterGameMode"), false, nullptr, nullptr, nullptr);
 	DEFINE_VTABLE_PTR_HELPER_CTOR(AShooterGameMode);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

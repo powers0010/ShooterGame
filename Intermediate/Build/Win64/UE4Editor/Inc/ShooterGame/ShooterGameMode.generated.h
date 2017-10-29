@@ -13,9 +13,9 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define SHOOTERGAME_ShooterGameMode_generated_h
 
-#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_RPC_WRAPPERS
-#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_RPC_WRAPPERS_NO_PURE_DECLS
-#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_INCLASS_NO_PURE_DECLS \
+#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_RPC_WRAPPERS
+#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_RPC_WRAPPERS_NO_PURE_DECLS
+#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesAShooterGameMode(); \
 	friend SHOOTERGAME_API class UClass* Z_Construct_UClass_AShooterGameMode(); \
@@ -25,7 +25,7 @@ public: \
 	enum {IsIntrinsic=COMPILED_IN_INTRINSIC};
 
 
-#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_INCLASS \
+#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_INCLASS \
 private: \
 	static void StaticRegisterNativesAShooterGameMode(); \
 	friend SHOOTERGAME_API class UClass* Z_Construct_UClass_AShooterGameMode(); \
@@ -35,7 +35,7 @@ public: \
 	enum {IsIntrinsic=COMPILED_IN_INTRINSIC};
 
 
-#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_STANDARD_CONSTRUCTORS \
+#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API AShooterGameMode(const FObjectInitializer& ObjectInitializer); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(AShooterGameMode) \
@@ -48,7 +48,7 @@ private: \
 public:
 
 
-#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_ENHANCED_CONSTRUCTORS \
+#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	NO_API AShooterGameMode(AShooterGameMode&&); \
@@ -59,26 +59,29 @@ DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(AShooterGameMode); \
 	DEFINE_DEFAULT_CONSTRUCTOR_CALL(AShooterGameMode)
 
 
-#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_PRIVATE_PROPERTY_OFFSET
-#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_12_PROLOG
-#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_GENERATED_BODY_LEGACY \
+#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_PRIVATE_PROPERTY_OFFSET \
+	FORCEINLINE static uint32 __PPO__GameRoundTime() { return STRUCT_OFFSET(AShooterGameMode, GameRoundTime); }
+
+
+#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_16_PROLOG
+#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_PRIVATE_PROPERTY_OFFSET \
-	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_RPC_WRAPPERS \
-	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_INCLASS \
-	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_STANDARD_CONSTRUCTORS \
+	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_PRIVATE_PROPERTY_OFFSET \
+	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_RPC_WRAPPERS \
+	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_INCLASS \
+	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_GENERATED_BODY \
+#define ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_PRIVATE_PROPERTY_OFFSET \
-	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
-	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_INCLASS_NO_PURE_DECLS \
-	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_15_ENHANCED_CONSTRUCTORS \
+	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_PRIVATE_PROPERTY_OFFSET \
+	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_RPC_WRAPPERS_NO_PURE_DECLS \
+	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_INCLASS_NO_PURE_DECLS \
+	ShooterGame_Source_ShooterGame_Public_Online_ShooterGameMode_h_19_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 

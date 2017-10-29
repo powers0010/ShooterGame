@@ -35,7 +35,7 @@ public:
 	//开火
 	void StartFire();
 
-	void FireWeapon();
+	virtual void FireWeapon() override;
 
 	//获取子弹信息
 	void ApplyWeaponConfig(FProjectileWeaponData& ProjectileData);

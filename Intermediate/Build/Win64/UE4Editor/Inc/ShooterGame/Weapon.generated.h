@@ -62,7 +62,8 @@ DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(AWeapon); \
 #define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_h_16_PRIVATE_PROPERTY_OFFSET \
 	FORCEINLINE static uint32 __PPO__Mesh1P() { return STRUCT_OFFSET(AWeapon, Mesh1P); } \
 	FORCEINLINE static uint32 __PPO__MuzzleAttachPoint() { return STRUCT_OFFSET(AWeapon, MuzzleAttachPoint); } \
-	FORCEINLINE static uint32 __PPO__FireSound() { return STRUCT_OFFSET(AWeapon, FireSound); }
+	FORCEINLINE static uint32 __PPO__FireSound() { return STRUCT_OFFSET(AWeapon, FireSound); } \
+	FORCEINLINE static uint32 __PPO__AmmoCount() { return STRUCT_OFFSET(AWeapon, AmmoCount); }
 
 
 #define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_h_13_PROLOG

@@ -54,7 +54,7 @@ void EmptyLinkFunctionForGeneratedCodeShooterBot() {}
 		check(OuterClass->GetClass());
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AShooterBot, 2183653308);
+	IMPLEMENT_CLASS(AShooterBot, 3955858815);
 	static FCompiledInDefer Z_CompiledInDefer_UClass_AShooterBot(Z_Construct_UClass_AShooterBot, &AShooterBot::StaticClass, TEXT("/Script/ShooterGame"), TEXT("AShooterBot"), false, nullptr, nullptr, nullptr);
 	DEFINE_VTABLE_PTR_HELPER_CTOR(AShooterBot);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
