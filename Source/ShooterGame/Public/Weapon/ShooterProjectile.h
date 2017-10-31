@@ -50,9 +50,6 @@ protected:
 	struct FProjectileWeaponData WeaponConfig;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	void InitializeVelocity(FVector ShooterDirection);
 	
 	TWeakObjectPtr<AController> MyController;

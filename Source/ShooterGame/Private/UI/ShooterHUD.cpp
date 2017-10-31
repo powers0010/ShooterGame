@@ -189,14 +189,31 @@ void AShooterHUD::DrawWeapon()
 		FText AmountText = FText::FromString(AmountString);
 		Canvas->StrLen(TimerFont, AmountString, SizeX, SizeY);
 
-		const float TimeBoxPosX = Canvas->ClipX - (FirstWeaponPos.X + WeaponBoxWidth + TextBoxWidht/2.f + SizeX/2.f)*ScaleUI;
-		const float TimeBoxPosY = WeaponBgPosY + (FirstWeaponBg.VL/2.f - SizeY/2.f)*ScaleUI;
+		const float AmmoBoxPosX = Canvas->ClipX - (FirstWeaponPos.X + WeaponBoxWidth + TextBoxWidht/2.f + SizeX/2.f)*ScaleUI;
+		const float AmmoBoxPosY = WeaponBgPosY + (FirstWeaponBg.VL/2.f - SizeY/2.f -5.f)*ScaleUI;
 
-		FCanvasTextItem AmountTextItem(FVector2D(TimeBoxPosX, TimeBoxPosY), AmountText, TimerFont, FontColor );
+		FCanvasTextItem AmountTextItem(FVector2D(AmmoBoxPosX, AmmoBoxPosY), AmountText, TimerFont, FontColor );
 		AmountTextItem.Scale = FVector2D(TextScale, TextScale);
 		AmountTextItem.BlendMode = SE_BLEND_Translucent;
 
 		Canvas->DrawItem(AmountTextItem);
+
+	//---------------------【剩余弹夹数量 文字部分】----------------
+		int32 ClipAmount = CurrentWeapon->GetClipAmount();
+		AmountString = FString::Printf(TEXT("Clip:%d"), ClipAmount);
+		AmountText = FText::FromString(AmountString);
+		Canvas->StrLen(TimerFont, AmountString, SizeX, SizeY);
+
+		const float TimeBoxPosX = Canvas->ClipX - (FirstWeaponPos.X + WeaponBoxWidth + TextBoxWidht / 2.f + SizeX / 2.f - 20.f)*ScaleUI;
+		const float TimeBoxPosY = WeaponBgPosY + (FirstWeaponBg.VL / 2.f)*ScaleUI;
+		TextScale = 0.3;
+		FCanvasTextItem ClipAmountTextItem(FVector2D(TimeBoxPosX, TimeBoxPosY), AmountText, TimerFont, FontColor);
+		ClipAmountTextItem.Scale = FVector2D(TextScale, TextScale);
+		ClipAmountTextItem.BlendMode = SE_BLEND_Translucent;
+
+		Canvas->DrawItem(ClipAmountTextItem);
+
+
 
 	//------------------【绘制弹夹】-----------------------------------------
 		const float WeaponClipWidth = FirstWeaponClipIcon.UL + WeaponClipOffset*(WeaponClipAmount - 1);
@@ -217,6 +234,5 @@ void AShooterHUD::DrawWeapon()
 			Canvas->SetDrawColor(color, color, color, color);
 			Canvas->DrawIcon(FirstWeaponClipIcon, WeaponClipPosX + i*WeaponClipOffset*ScaleUI, WeaponClipPosY, ScaleUI);
 		}
-	
 	}
 }

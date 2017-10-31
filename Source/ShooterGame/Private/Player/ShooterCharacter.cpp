@@ -77,15 +77,17 @@ void AShooterCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	//¹¹ÔìÎäÆ÷°ó¶¨
-	FActorSpawnParameters SpawnParameter;
-	SpawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	CurrentWeapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass, SpawnParameter);
-	if (CurrentWeapon)
-	{
-		CurrentWeapon->SetPawnOwner(this);
-		CurrentWeapon->AttachWeaponToPawn();
-		CurrentWeapon->Instigator = this;
-	}
+// 	FActorSpawnParameters SpawnParameter;
+// 	SpawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+// 	CurrentWeapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass, SpawnParameter);
+// 	if (CurrentWeapon)
+// 	{
+// 		CurrentWeapon->SetPawnOwner(this);
+// //		CurrentWeapon->AttachWeaponToPawn();
+// 		CurrentWeapon->OnEquip(nullptr);
+// 		CurrentWeapon->Instigator = this;
+// 	}
+	SpawnDefaultInventory();
 }
 
 void AShooterCharacter::OnCameraUpdata(const FVector& CameraLocation, const FRotator& CameraRotation)
@@ -135,6 +137,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction(TEXT("Target"), IE_Released, this, &AShooterCharacter::OnEndTarget);
 	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &AShooterCharacter::OnStartFire);
 	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Released, this, &AShooterCharacter::OnStopFire);
+	PlayerInputComponent->BindAction(TEXT("Reload"), IE_Pressed, this, &AShooterCharacter::OnReload);
+	PlayerInputComponent->BindAction(TEXT("Equip"), IE_Pressed, this, &AShooterCharacter::OnEquip);
 
 }
 
@@ -182,7 +186,39 @@ void AShooterCharacter::OnStartFire()
 }
 void AShooterCharacter::OnStopFire()
 {
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->StopFire();
+	}
+}
 
+void AShooterCharacter::OnReload()
+{
+	AShooterPlayerController* MyController = Cast<AShooterPlayerController>(GetController());
+	if (MyController)
+	{
+		if (CurrentWeapon)
+		{
+			CurrentWeapon->StartReload();
+//			UE_LOG(LogTemp, Warning, TEXT("OnReload"));
+		}
+	}
+}
+
+void AShooterCharacter::OnEquip()
+{
+	AShooterPlayerController* MyController = Cast<AShooterPlayerController>(GetController());
+	if (MyController)
+	{
+		if (Inventory.Num()>0 && CurrentWeapon && CurrentWeapon->GetCurrentWeaponState() != WeaponState::Equiping)
+		{
+			const int32 CurrentWeaponIndex = Inventory.IndexOfByKey(CurrentWeapon);
+			const int32 NextWeaponIndex = (CurrentWeaponIndex + 1) % Inventory.Num();
+			AWeapon* NextWeapon = Inventory[NextWeaponIndex];
+
+			EquipWeapon(NextWeapon);
+		}
+	}
 }
 
 USkeletalMeshComponent* AShooterCharacter::GetMesh1P()
@@ -241,4 +277,85 @@ int32 AShooterCharacter::GetMaxHealth() const
 AWeapon* AShooterCharacter::GetCurrentWeapon()
 {
 	return CurrentWeapon ? CurrentWeapon : nullptr;
+}
+
+bool AShooterCharacter::CanFire()
+{
+	return IsAlive();
+}
+
+bool AShooterCharacter::IsAlive()
+{
+	return Health > 0;
+}
+
+void AShooterCharacter::SpawnDefaultInventory()
+{
+	int32 NumOfDefaultInventory = DefaultInventorySystem.Num();
+	for (int32 i = 0;i< NumOfDefaultInventory; i++)
+	{
+		if (DefaultInventorySystem[i])
+		{
+			FActorSpawnParameters SpawnInfo;
+			SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			AWeapon* NewWeapon = GetWorld()->SpawnActor<AWeapon>(DefaultInventorySystem[i], SpawnInfo);
+			if (NewWeapon)
+			{
+				AddWeapon(NewWeapon);
+			}
+		}
+	}
+
+	if (Inventory.Num()>0)
+	{
+		CurrentWeapon = Inventory[0];
+		CurrentWeapon->OnEquip(nullptr);
+	}
+}
+
+void AShooterCharacter::AddWeapon(AWeapon* NewWeapon)
+{
+	if (NewWeapon)
+	{
+		NewWeapon->SetPawnOwner(this);
+		NewWeapon->Instigator = Instigator;
+		Inventory.AddUnique(NewWeapon);
+	}
+}
+
+void AShooterCharacter::EquipWeapon(AWeapon* Weapon)
+{
+	if (Weapon)
+	{
+		SetCurrentWeapon(Weapon,CurrentWeapon);
+	}
+}
+
+void AShooterCharacter::SetCurrentWeapon(AWeapon* NewWeapon, AWeapon* LastWeapon)
+{
+	AWeapon* LocalWeapon = nullptr;
+
+	if (LastWeapon)
+	{
+		LocalWeapon = LastWeapon;
+	}
+	else if (NewWeapon!= CurrentWeapon)
+	{
+		LocalWeapon = CurrentWeapon;
+	}
+
+	if (LocalWeapon)
+	{
+		//Ð¶ÔØÎäÆ÷
+		LocalWeapon->OnUnEquip();
+	}
+	CurrentWeapon = NewWeapon;
+
+	if (NewWeapon)
+	{
+		NewWeapon->SetPawnOwner(this);
+		NewWeapon->Instigator = Instigator;
+		NewWeapon->OnEquip(LastWeapon);
+	}
+
 }

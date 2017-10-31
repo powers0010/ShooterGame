@@ -25,9 +25,6 @@ protected:
 	class UParticleSystem* ExplosionEffect;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	
 	
 };

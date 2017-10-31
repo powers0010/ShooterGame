@@ -47,7 +47,9 @@ public:
 	void OnEndTarget();
 	void OnStartFire();
 	void OnStopFire();
-
+	void OnReload();
+	void OnEquip();
+	
 	//获取 变量的接口
 	USkeletalMeshComponent* GetMesh1P();
 
@@ -66,6 +68,9 @@ public:
 
 	AWeapon* GetCurrentWeapon();
 
+	bool CanFire();
+
+	bool IsAlive();
 protected:
 
 	/*UPROPERTY(EditAnywhere, category = "Camera")*/
@@ -79,9 +84,23 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly , Category = Weapon )
 		TSubclassOf<AWeapon> WeaponClass;
+// 
+ 	UPROPERTY(VisibleAnywhere, Category = Weapon)
+ 		AWeapon* CurrentWeapon;
 
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-		AWeapon* CurrentWeapon;
+	UPROPERTY(EditDefaultsOnly, Category = Inventory)
+		TArray<TSubclassOf<AWeapon>> DefaultInventorySystem;
+
+	UPROPERTY(Transient)
+		TArray<AWeapon*> Inventory;
+
+	void SpawnDefaultInventory();
+
+	void AddWeapon(AWeapon* NewWeapon);
+
+	void EquipWeapon(AWeapon* Weapon);
+
+	void SetCurrentWeapon(AWeapon* NewWeapon, AWeapon* LastWeapon);
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 		FName WeaponAttachPoint;

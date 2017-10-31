@@ -14,7 +14,7 @@
 AShooterProjectile::AShooterProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	//≈ˆ◊≤…Ë÷√
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComp"));
@@ -51,11 +51,11 @@ void AShooterProjectile::BeginPlay()
 }
 
 // Called every frame
-void AShooterProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
+// void AShooterProjectile::Tick(float DeltaTime)
+// {
+// 	Super::Tick(DeltaTime);
+// 
+// }
 
 void AShooterProjectile::InitializeVelocity(FVector ShooterDirection)
 {
@@ -94,7 +94,7 @@ void AShooterProjectile::OnImpact(const FHitResult& ImpactResult)
 {
 
 	Explode(ImpactResult);
-
+	Destroy();
 }
 
 void AShooterProjectile::Explode(const FHitResult& ImpackResult)

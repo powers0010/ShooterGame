@@ -8,7 +8,7 @@
 AExplosionEffect::AExplosionEffect()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	
 	ExplosionEffect = nullptr;
 }
@@ -22,13 +22,7 @@ void AExplosionEffect::BeginPlay()
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this , ExplosionEffect,GetActorLocation(),GetActorRotation());
 	}
-
+	Destroy();
 }
 
-// Called every frame
-void AExplosionEffect::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
 
