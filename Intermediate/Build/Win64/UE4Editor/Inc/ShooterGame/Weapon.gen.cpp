@@ -14,15 +14,57 @@ PRAGMA_DISABLE_OPTIMIZATION
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeWeapon() {}
 // Cross Module References
-	SHOOTERGAME_API UScriptStruct* Z_Construct_UScriptStruct_FWeaponData();
+	SHOOTERGAME_API UScriptStruct* Z_Construct_UScriptStruct_FWeaponAnim();
 	UPackage* Z_Construct_UPackage__Script_ShooterGame();
+	ENGINE_API UClass* Z_Construct_UClass_UAnimMontage_NoRegister();
+	SHOOTERGAME_API UScriptStruct* Z_Construct_UScriptStruct_FWeaponData();
 	SHOOTERGAME_API UClass* Z_Construct_UClass_AWeapon_NoRegister();
 	SHOOTERGAME_API UClass* Z_Construct_UClass_AWeapon();
 	ENGINE_API UClass* Z_Construct_UClass_AActor();
+	ENGINE_API UClass* Z_Construct_UClass_UCameraShake_NoRegister();
+	COREUOBJECT_API UClass* Z_Construct_UClass_UClass();
 	ENGINE_API UClass* Z_Construct_UClass_UParticleSystem_NoRegister();
 	ENGINE_API UClass* Z_Construct_UClass_USoundCue_NoRegister();
 	ENGINE_API UClass* Z_Construct_UClass_USkeletalMeshComponent_NoRegister();
 // End Cross Module References
+class UScriptStruct* FWeaponAnim::StaticStruct()
+{
+	static class UScriptStruct* Singleton = NULL;
+	if (!Singleton)
+	{
+		extern SHOOTERGAME_API uint32 Get_Z_Construct_UScriptStruct_FWeaponAnim_CRC();
+		Singleton = GetStaticStruct(Z_Construct_UScriptStruct_FWeaponAnim, Z_Construct_UPackage__Script_ShooterGame(), TEXT("WeaponAnim"), sizeof(FWeaponAnim), Get_Z_Construct_UScriptStruct_FWeaponAnim_CRC());
+	}
+	return Singleton;
+}
+static FCompiledInDeferStruct Z_CompiledInDeferStruct_UScriptStruct_FWeaponAnim(FWeaponAnim::StaticStruct, TEXT("/Script/ShooterGame"), TEXT("WeaponAnim"), false, nullptr, nullptr);
+static struct FScriptStruct_ShooterGame_StaticRegisterNativesFWeaponAnim
+{
+	FScriptStruct_ShooterGame_StaticRegisterNativesFWeaponAnim()
+	{
+		UScriptStruct::DeferCppStructOps(FName(TEXT("WeaponAnim")),new UScriptStruct::TCppStructOps<FWeaponAnim>);
+	}
+} ScriptStruct_ShooterGame_StaticRegisterNativesFWeaponAnim;
+	UScriptStruct* Z_Construct_UScriptStruct_FWeaponAnim()
+	{
+		UPackage* Outer = Z_Construct_UPackage__Script_ShooterGame();
+		extern uint32 Get_Z_Construct_UScriptStruct_FWeaponAnim_CRC();
+		static UScriptStruct* ReturnStruct = FindExistingStructIfHotReloadOrDynamic(Outer, TEXT("WeaponAnim"), sizeof(FWeaponAnim), Get_Z_Construct_UScriptStruct_FWeaponAnim_CRC(), false);
+		if (!ReturnStruct)
+		{
+			ReturnStruct = new(EC_InternalUseOnlyConstructor, Outer, TEXT("WeaponAnim"), RF_Public|RF_Transient|RF_MarkAsNative) UScriptStruct(FObjectInitializer(), NULL, new UScriptStruct::TCppStructOps<FWeaponAnim>, EStructFlags(0x00000001));
+			UProperty* NewProp_Pawn1P = new(EC_InternalUseOnlyConstructor, ReturnStruct, TEXT("Pawn1P"), RF_Public|RF_Transient|RF_MarkAsNative) UObjectProperty(CPP_PROPERTY_BASE(Pawn1P, FWeaponAnim), 0x0010000000010001, Z_Construct_UClass_UAnimMontage_NoRegister());
+			ReturnStruct->StaticLink();
+#if WITH_METADATA
+			UMetaData* MetaData = ReturnStruct->GetOutermost()->GetMetaData();
+			MetaData->SetValue(ReturnStruct, TEXT("ModuleRelativePath"), TEXT("Public/Weapon/Weapon.h"));
+			MetaData->SetValue(NewProp_Pawn1P, TEXT("Category"), TEXT("Animation"));
+			MetaData->SetValue(NewProp_Pawn1P, TEXT("ModuleRelativePath"), TEXT("Public/Weapon/Weapon.h"));
+#endif
+		}
+		return ReturnStruct;
+	}
+	uint32 Get_Z_Construct_UScriptStruct_FWeaponAnim_CRC() { return 171243882U; }
 class UScriptStruct* FWeaponData::StaticStruct()
 {
 	static class UScriptStruct* Singleton = NULL;
@@ -88,6 +130,10 @@ static struct FScriptStruct_ShooterGame_StaticRegisterNativesFWeaponData
 				OuterClass->ClassFlags |= (EClassFlags)0x20900080u;
 
 
+				UProperty* NewProp_FireCameraShake = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("FireCameraShake"), RF_Public|RF_Transient|RF_MarkAsNative) UClassProperty(CPP_PROPERTY_BASE(FireCameraShake, AWeapon), 0x0024080000010001, Z_Construct_UClass_UCameraShake_NoRegister(), Z_Construct_UClass_UClass());
+				UProperty* NewProp_ReloadAnim = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ReloadAnim"), RF_Public|RF_Transient|RF_MarkAsNative) UStructProperty(CPP_PROPERTY_BASE(ReloadAnim, AWeapon), 0x0020080000010001, Z_Construct_UScriptStruct_FWeaponAnim());
+				UProperty* NewProp_EquipAnim = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("EquipAnim"), RF_Public|RF_Transient|RF_MarkAsNative) UStructProperty(CPP_PROPERTY_BASE(EquipAnim, AWeapon), 0x0020080000010001, Z_Construct_UScriptStruct_FWeaponAnim());
+				UProperty* NewProp_FireAnim = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("FireAnim"), RF_Public|RF_Transient|RF_MarkAsNative) UStructProperty(CPP_PROPERTY_BASE(FireAnim, AWeapon), 0x0020080000010001, Z_Construct_UScriptStruct_FWeaponAnim());
 				UProperty* NewProp_WeaponConfig = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("WeaponConfig"), RF_Public|RF_Transient|RF_MarkAsNative) UStructProperty(CPP_PROPERTY_BASE(WeaponConfig, AWeapon), 0x0020080000010001, Z_Construct_UScriptStruct_FWeaponData());
 				UProperty* NewProp_ClipCount = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ClipCount"), RF_Public|RF_Transient|RF_MarkAsNative) UIntProperty(CPP_PROPERTY_BASE(ClipCount, AWeapon), 0x0020080000020001);
 				UProperty* NewProp_AmmoCount = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("AmmoCount"), RF_Public|RF_Transient|RF_MarkAsNative) UIntProperty(CPP_PROPERTY_BASE(AmmoCount, AWeapon), 0x0020080000010001);
@@ -104,6 +150,14 @@ static struct FScriptStruct_ShooterGame_StaticRegisterNativesFWeaponData
 				UMetaData* MetaData = OuterClass->GetOutermost()->GetMetaData();
 				MetaData->SetValue(OuterClass, TEXT("IncludePath"), TEXT("Weapon/Weapon.h"));
 				MetaData->SetValue(OuterClass, TEXT("ModuleRelativePath"), TEXT("Public/Weapon/Weapon.h"));
+				MetaData->SetValue(NewProp_FireCameraShake, TEXT("Category"), TEXT("Effect"));
+				MetaData->SetValue(NewProp_FireCameraShake, TEXT("ModuleRelativePath"), TEXT("Public/Weapon/Weapon.h"));
+				MetaData->SetValue(NewProp_ReloadAnim, TEXT("Category"), TEXT("Animation"));
+				MetaData->SetValue(NewProp_ReloadAnim, TEXT("ModuleRelativePath"), TEXT("Public/Weapon/Weapon.h"));
+				MetaData->SetValue(NewProp_EquipAnim, TEXT("Category"), TEXT("Animation"));
+				MetaData->SetValue(NewProp_EquipAnim, TEXT("ModuleRelativePath"), TEXT("Public/Weapon/Weapon.h"));
+				MetaData->SetValue(NewProp_FireAnim, TEXT("Category"), TEXT("Animation"));
+				MetaData->SetValue(NewProp_FireAnim, TEXT("ModuleRelativePath"), TEXT("Public/Weapon/Weapon.h"));
 				MetaData->SetValue(NewProp_WeaponConfig, TEXT("Category"), TEXT("Weapon"));
 				MetaData->SetValue(NewProp_WeaponConfig, TEXT("ModuleRelativePath"), TEXT("Public/Weapon/Weapon.h"));
 				MetaData->SetValue(NewProp_ClipCount, TEXT("Category"), TEXT("Weapon"));
@@ -136,7 +190,7 @@ static struct FScriptStruct_ShooterGame_StaticRegisterNativesFWeaponData
 		check(OuterClass->GetClass());
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AWeapon, 3620506321);
+	IMPLEMENT_CLASS(AWeapon, 797391036);
 	static FCompiledInDefer Z_CompiledInDefer_UClass_AWeapon(Z_Construct_UClass_AWeapon, &AWeapon::StaticClass, TEXT("/Script/ShooterGame"), TEXT("AWeapon"), false, nullptr, nullptr, nullptr);
 	DEFINE_VTABLE_PTR_HELPER_CTOR(AWeapon);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

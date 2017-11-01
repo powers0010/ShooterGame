@@ -113,7 +113,7 @@ static struct FScriptStruct_ShooterGame_StaticRegisterNativesFInstantWeaponData
 		check(OuterClass->GetClass());
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AWeapon_Instant, 390716144);
+	IMPLEMENT_CLASS(AWeapon_Instant, 3523508433);
 	static FCompiledInDefer Z_CompiledInDefer_UClass_AWeapon_Instant(Z_Construct_UClass_AWeapon_Instant, &AWeapon_Instant::StaticClass, TEXT("/Script/ShooterGame"), TEXT("AWeapon_Instant"), false, nullptr, nullptr, nullptr);
 	DEFINE_VTABLE_PTR_HELPER_CTOR(AWeapon_Instant);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

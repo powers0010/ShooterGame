@@ -39,6 +39,11 @@ public:
 	//伤害接口
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	virtual float PlayAnimMontage(class UAnimMontage* AnimMontage, float InPlayRate  = 1.f , FName StartSectionName  = NAME_None ) override;
+
+	virtual void StopAnimMontage(class UAnimMontage* AnimMontage  = NULL ) override;
+
+	USkeletalMeshComponent* GetPawnMesh();
 
 	//控制输入
 	void MoveForward(float value);

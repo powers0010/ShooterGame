@@ -10,6 +10,7 @@ class AShooterCharacter;
 class UAudioComponent;
 class USoundCue;
 class UParticleSystem;
+class UAnimMontage;
 
 namespace WeaponState
 {
@@ -43,6 +44,16 @@ struct FWeaponData
 		AmmoPerClip = 10;
 		ClipAmount = 5;
 	}
+};
+
+USTRUCT()
+struct FWeaponAnim
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditDefaultsOnly, category = Animation)
+	UAnimMontage* Pawn1P;
+
 };
 
 UCLASS()
@@ -99,6 +110,20 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	FWeaponData WeaponConfig;
+
+	bool bPlayingFiringAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = Animation)
+	FWeaponAnim FireAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = Animation)
+	FWeaponAnim EquipAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = Animation)
+	FWeaponAnim ReloadAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = Effect)
+	TSubclassOf<UCameraShake> FireCameraShake;
 
 	//-----------【武器状态切换状态开关】-------------------
 	bool bIsEquipped;
@@ -174,7 +199,10 @@ public:
 	//更新子弹数量
 	void ReloadWeapon();
 
-	
+	float PlayMontageAnimation(const FWeaponAnim Animation);
+
+	void StopMontageAnimation(const FWeaponAnim Animation);
+
 
 	//获取子弹数量
 	int32 GetCurrentAmmoAmount() const;

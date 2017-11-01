@@ -257,12 +257,35 @@ float AShooterCharacter::TakeDamage(float Damage, struct FDamageEvent const& Dam
 	if (ActualDamage>0.f)
 	{
  		Health -= ActualDamage;
-		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
+//		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
  	}
 
 	return ActualDamage;
 }
 
+float AShooterCharacter::PlayAnimMontage(class UAnimMontage* AnimMontage, float InPlayRate , FName StartSectionName)
+{
+	USkeletalMeshComponent* UseMesh = GetPawnMesh();
+	if (UseMesh && AnimMontage && UseMesh->AnimScriptInstance)
+	{
+		return UseMesh->AnimScriptInstance->Montage_Play(AnimMontage, InPlayRate);
+	}
+	return 0.f;
+}
+
+void AShooterCharacter::StopAnimMontage(class UAnimMontage* AnimMontage)
+{
+	USkeletalMeshComponent* UseMesh = GetPawnMesh();
+	if (UseMesh && AnimMontage && UseMesh->AnimScriptInstance)
+	{
+		UseMesh->AnimScriptInstance->Montage_Stop(AnimMontage->BlendOut.GetBlendTime(), AnimMontage);
+	}
+}
+
+USkeletalMeshComponent* AShooterCharacter::GetPawnMesh()
+{
+	return Mesh1P;
+}
 
 int32 AShooterCharacter::GetCurHealth() const
 {

@@ -37,6 +37,7 @@ AWeapon::AWeapon() : AmmoCount(50)
 	bWantToFiring = false;
 	bWantToEquip = false;
 	bReFiring = false;
+	bPlayingFiringAnim = false;
 }
 
 // Called when the game starts or when spawned
@@ -105,6 +106,7 @@ void AWeapon::OnUnEquip()
 		bWantToReload = false;
 
 		//停止播放装弹动画
+		StopMontageAnimation(ReloadAnim);
 
 		GetWorldTimerManager().ClearTimer(TimerHandle_StopReload);
 		GetWorldTimerManager().ClearTimer( TimerHandle_ReloadWeapon);
@@ -114,6 +116,7 @@ void AWeapon::OnUnEquip()
 	{
 		bWantToEquip = false;
 		//停止播放 装备动画
+		StopMontageAnimation(EquipAnim);
 
 		GetWorldTimerManager().ClearTimer( TimerHandle_OnEquipFinish);
 	}
@@ -207,17 +210,31 @@ void AWeapon::SimulateWeaponFire()
 	{
 		PlayWeaponSound(FireSound);
 	}
-// 	if (FireEffect)
-// 	{
-// 		UGameplayStatics::SpawnEmitterAttached(FireEffect, Mesh1P,MuzzleAttachPoint);
-// 	}
 	//开火动画
+	if (!bPlayingFiringAnim)
+	{
+		bPlayingFiringAnim = true;
+		PlayMontageAnimation(FireAnim);
+	}
+	if (FireCameraShake)
+	{
+		AShooterPlayerController* PC = PawnOwner != nullptr ? Cast<AShooterPlayerController>(PawnOwner->Controller) : nullptr;
+		if (PC && PC->IsLocalController())
+		{
+			PC->ClientPlayCameraShake(FireCameraShake);
+		}
+	}
 
 }
 
 void AWeapon::StopSimulateWeaponFire()
 {
 	//todo
+	if (bPlayingFiringAnim)
+	{
+		bPlayingFiringAnim = false;
+		StopMontageAnimation(FireAnim);
+	}
 }
 
 void AWeapon::FireWeapon()
@@ -351,11 +368,11 @@ void AWeapon::HandleEndFire()
 
 void AWeapon::HandleStartReload()
 {
-	float AnimDurTime = 0.f;
+	float AnimDurTime = PlayMontageAnimation(ReloadAnim);
 
 	if (AnimDurTime<=0.f)
 	{
-		AnimDurTime = 2.f;
+		AnimDurTime = 0.5f;
 	}
 	//PlayAnim
 
@@ -371,6 +388,7 @@ void AWeapon::HandleStartReload()
 void AWeapon::HandleEndReload()
 {
 	//停止动画
+	StopMontageAnimation(ReloadAnim);
 
 	GetWorldTimerManager().ClearTimer(TimerHandle_StopReload);
 	GetWorldTimerManager().ClearTimer( TimerHandle_ReloadWeapon);
@@ -386,9 +404,12 @@ void AWeapon::HandleStartEquip()
 
 	if (LastWeapon)	//换枪
 	{
-		float AnimDurTime = 2.f;
+		float AnimDurTime = PlayMontageAnimation(EquipAnim);
 		//PlayAnim
-
+		if (AnimDurTime<=0.f)
+		{
+			AnimDurTime = 1.f;
+		}
 		GetWorldTimerManager().SetTimer(TimerHandle_OnEquipFinish, this, &AWeapon::OnEquipFinish, AnimDurTime, false);
 	}
 	else			//角色生成时进行
@@ -408,6 +429,7 @@ void AWeapon::HandleEndEquip()
 	GetWorldTimerManager().ClearTimer(TimerHandle_OnEquipFinish);
 
 	//停止武器动画
+	StopMontageAnimation(EquipAnim);
 }
 
 void AWeapon::OnEquipFinish()
@@ -455,3 +477,28 @@ WeaponState::Type AWeapon::GetCurrentWeaponState()
 	return CurWeaponState;
 }
 
+float AWeapon::PlayMontageAnimation(const FWeaponAnim Animation)
+{
+	float during = 0.f;
+	if (PawnOwner)
+	{
+		UAnimMontage* UseMontage = Animation.Pawn1P;
+		if (UseMontage)
+		{
+			during = PawnOwner->PlayAnimMontage(UseMontage);
+		}
+	}
+	return during;
+}
+
+void AWeapon::StopMontageAnimation(const FWeaponAnim Animation)
+{
+	if (PawnOwner)
+	{
+		UAnimMontage* UseMontage = Animation.Pawn1P;
+		if (UseMontage)
+		{
+			PawnOwner->StopAnimMontage(UseMontage);
+		}
+	}
+}
