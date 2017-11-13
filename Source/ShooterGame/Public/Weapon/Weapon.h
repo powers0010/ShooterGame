@@ -47,12 +47,27 @@ struct FWeaponData
 };
 
 USTRUCT()
+struct FSniperWeaponData
+{
+	GENERATED_USTRUCT_BODY()
+
+		UPROPERTY(EditDefaultsOnly, category = sniperWeaponData)
+		float WeaponRange;
+
+	UPROPERTY(EditDefaultsOnly, category = sniperWeaponData)
+		TSubclassOf<UDamageType> DamageType;
+
+	UPROPERTY(EditDefaultsOnly, category = sniperWeaponData)
+		int32 damage;
+};
+
+USTRUCT()
 struct FWeaponAnim
 {
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditDefaultsOnly, category = Animation)
-	UAnimMontage* Pawn1P;
+	UAnimMontage* AnimP;
 
 };
 
@@ -79,6 +94,9 @@ protected:
 
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class USkeletalMeshComponent* Mesh1P;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	FText WeaponName;
 
 	//生成子弹的SocketName
 	UPROPERTY(EditDefaultsOnly , Category = Weapon)
@@ -113,6 +131,9 @@ protected:
 
 	bool bPlayingFiringAnim;
 
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = Icon)
+	UTexture2D* WeaponIcon;
+	 
 	UPROPERTY(EditDefaultsOnly, Category = Animation)
 	FWeaponAnim FireAnim;
 
@@ -123,28 +144,10 @@ protected:
 	FWeaponAnim ReloadAnim;
 
 	UPROPERTY(EditDefaultsOnly, Category = Effect)
-	TSubclassOf<UCameraShake> FireCameraShake;
+	TSubclassOf<class UCameraShake> FireCameraShake;
 
-	//-----------【武器状态切换状态开关】-------------------
-	bool bIsEquipped;
-	bool bWantToReload;
-	bool bWantToFiring;
-	bool bWantToEquip;
-	bool bReFiring;
-
-	bool CanFire() const;
-	bool CanRealod();
-	WeaponState::Type CurWeaponState;
-	WeaponState::Type PreWeaponState;
-
-	AWeapon* LastWeapon;
-
-	FTimerHandle TimerHandle_OnEquipFinish;
-	FTimerHandle TimerHandle_ReloadWeapon;
-	FTimerHandle TimerHandle_StopReload;
-	FTimerHandle TimerHandle_HandleReFiring;
-
-	void OnEquipFinish();
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	FName WeaponAttachPoint;
 
 public:	
 	//获取瞄准方向 //子弹发射方向 //控制器方向
@@ -153,61 +156,51 @@ public:
 	FHitResult WeaponTrace(FVector TraceFrom, FVector TraceTo) const;
 
 	//----------【开火】--------------
-	void StartFire();
+	virtual void OnStartFire();
 
-	void StopFire();
+	virtual void OnStopFire();
 
-	//具体实现开火状态
-	void HandleFiring();
+	virtual void OnReload();
+
+	virtual void OnEquip();
+
+	bool CanReload();
 
 	virtual void SimulateWeaponFire();
 
-	virtual void StopSimulateWeaponFire();
-
 	virtual void FireWeapon();
+
+	virtual void OnStartTarget();
+
+	virtual void OnStopTarget();
+
+	virtual void OnGetClip(int32 Amount);
 
 	UAudioComponent* PlayWeaponSound(USoundCue* FireSound);
 
 	FVector GetMuzzleLocation();
 
-	void OnEquip(const AWeapon* _LastWeapon);
-
-	void OnUnEquip();
-
-	//----------【武器状态】
-	void CaculateEquipState();
-	
-	void SetWeaponState(WeaponState::Type NewWeaponState);
-
-	void DependOnCurrentWeaponState();
-
-	void HandleStartFire();
-
-	void HandleEndFire();
-
-	void HandleStartReload();
-
-	void HandleEndReload();
-
-	void HandleStartEquip();
-
-	void HandleEndEquip();
-	//开始装载子弹
-	void StartReload();
-	//结束装载子弹
-	void StopReload();
-	//更新子弹数量
-	void ReloadWeapon();
-
 	float PlayMontageAnimation(const FWeaponAnim Animation);
 
 	void StopMontageAnimation(const FWeaponAnim Animation);
 
+	USkeletalMeshComponent* GetMesh1P();
 
 	//获取子弹数量
 	int32 GetCurrentAmmoAmount() const;
+
 	int32 GetMaxAmmoAmount() const;
+
 	int32 GetClipAmount() const;
 
-	WeaponState::Type GetCurrentWeaponState();
+	float GetFireCD();
+
+	UAnimMontage* GetEquipAnim();
+
+	USoundCue* GetEquipSound();
+
+	UAnimMontage* GetReloadAnim();
+
+	USoundCue* GetReloadSound();
+
 };

@@ -16,7 +16,7 @@
 AShooterGameMode::AShooterGameMode()
 {
 	// 	//≈‰÷√ª˘¥°øÚº‹¿‡
- 	static ConstructorHelpers::FClassFinder<AShooterCharacter> BP_ShootCharacter(TEXT("/Game/Blueprints/Charactor/BP_ShooterCharacter"));
+ 	static ConstructorHelpers::FClassFinder<AShooterCharacter> BP_ShootCharacter(TEXT("/Game/Blueprints/Charactor/BP_ShooterCharacter1"));
  	DefaultPawnClass = BP_ShootCharacter.Class;
 
 	PlayerControllerClass = AShooterPlayerController::StaticClass();
@@ -31,9 +31,9 @@ void AShooterGameMode::StartPlay()
 {
 	Super::StartPlay();
 
-	CreateBotController();
-
-	StartBots();
+// 	CreateBotController();
+// 
+// 	StartBots();
 }
 
 void  AShooterGameMode::PreInitializeComponents()

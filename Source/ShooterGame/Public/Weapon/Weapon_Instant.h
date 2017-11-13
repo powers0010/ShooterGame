@@ -58,4 +58,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, category = Impact)
 	TSubclassOf<AShooterImpactEffect> ImpactEffectActor;
+
+
 };

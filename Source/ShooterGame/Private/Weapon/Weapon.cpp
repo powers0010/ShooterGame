@@ -11,6 +11,7 @@
 #include "ExplosionEffect.h"
 
 
+
 // Sets default values
 AWeapon::AWeapon() : AmmoCount(50)
 {
@@ -30,14 +31,7 @@ AWeapon::AWeapon() : AmmoCount(50)
 	FireSound = nullptr;
 	PawnOwner = nullptr;
 
-	PreWeaponState = WeaponState::Idle;
-	CurWeaponState = WeaponState::Idle;
-	bIsEquipped = false;
-	bWantToReload = false;
-	bWantToFiring = false;
-	bWantToEquip = false;
-	bReFiring = false;
-	bPlayingFiringAnim = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -59,11 +53,11 @@ void AWeapon::AttachWeaponToPawn()
 	if (PawnOwner)
 	{
 		USkeletalMeshComponent* PawnMesh1P = PawnOwner->GetMesh1P();
-		FName WeaponPoint = PawnOwner->GetWeaponAttachPoint();
+		/*FName WeaponPoint = PawnOwner->GetWeaponAttachPoint();*/
 		if (PawnMesh1P)
 		{
 			Mesh1P->SetHiddenInGame(false);
-			Mesh1P->AttachToComponent(PawnMesh1P, FAttachmentTransformRules::KeepRelativeTransform, WeaponPoint);
+			Mesh1P->AttachToComponent(PawnMesh1P, FAttachmentTransformRules::KeepRelativeTransform, WeaponAttachPoint);
 		}
 	}
 }
@@ -81,47 +75,6 @@ void AWeapon::SetPawnOwner(AShooterCharacter* Pawn)
 	{
 		PawnOwner = Pawn;
 	}
-}
-
-void AWeapon::OnEquip(const AWeapon* _LastWeapon)
-{
-	LastWeapon = (AWeapon*)_LastWeapon;
-	if (!bWantToEquip)
-	{
-		bWantToEquip = true;
-		CaculateEquipState();
-		DependOnCurrentWeaponState();
-	}
-}
-
-void AWeapon::OnUnEquip()
-{
-	//卸载mesh
-	DetachWeaponFromPawn();
-	bIsEquipped = false;
-	StopFire();
-
-	if (bWantToReload)
-	{
-		bWantToReload = false;
-
-		//停止播放装弹动画
-		StopMontageAnimation(ReloadAnim);
-
-		GetWorldTimerManager().ClearTimer(TimerHandle_StopReload);
-		GetWorldTimerManager().ClearTimer( TimerHandle_ReloadWeapon);
-	}
-
-	if (bWantToEquip)
-	{
-		bWantToEquip = false;
-		//停止播放 装备动画
-		StopMontageAnimation(EquipAnim);
-
-		GetWorldTimerManager().ClearTimer( TimerHandle_OnEquipFinish);
-	}
-
-	DependOnCurrentWeaponState();
 }
 
 FVector AWeapon::GetAdjustAim()
@@ -146,7 +99,7 @@ FHitResult AWeapon::WeaponTrace(FVector TraceFrom, FVector TraceTo) const
 	FCollisionQueryParams TraceParams(weapontag, true, Instigator);
 	TraceParams.bTraceAsyncScene = true;
 	TraceParams.bReturnPhysicalMaterial = true;
-
+/*	GetWorld()->DebugDrawTraceTag = weapontag;*/
 	FHitResult HitResult(ForceInit);
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceFrom, TraceTo, COLLISION_WEAPON, TraceParams);
 
@@ -163,46 +116,45 @@ FVector AWeapon::GetMuzzleLocation()
 }
 
 
-void AWeapon::StartFire()
-{
-	if (!bWantToFiring)
-	{
-		bWantToFiring = true;
-		CaculateEquipState();
-		DependOnCurrentWeaponState();
-	}
-}
-
-void AWeapon::StopFire()
-{
-	if (bWantToFiring)
-	{
-		bWantToFiring = false;
-		CaculateEquipState();
-		DependOnCurrentWeaponState();
-	}
-}
-
-void AWeapon::HandleFiring()
+void AWeapon::OnStartFire()
 {
 	if (AmmoCount > 0)
 	{
 		SimulateWeaponFire();
 		FireWeapon();
 		AmmoCount--;
-
-		bReFiring = (CurWeaponState == WeaponState::Firing) && WeaponConfig.FireCD > 0.f;
-		if (bReFiring)
-		{
-			GetWorldTimerManager().SetTimer(TimerHandle_HandleReFiring, this, &AWeapon::HandleFiring, WeaponConfig.FireCD, false);
-		}
-	}
-	else
-	{
-		//提示子弹不足
 	}
 }
 
+void AWeapon::OnStopFire()
+{
+
+}
+void AWeapon::OnStartTarget()
+{
+
+}
+
+void AWeapon::OnStopTarget()
+{
+
+}
+
+void AWeapon::OnReload()
+{
+	AmmoCount = FMath::Min(AmmoCount+WeaponConfig.AmmoPerClip ,GetMaxAmmoAmount());
+	ClipCount--;
+}
+
+void AWeapon::OnEquip()
+{
+
+}
+
+bool AWeapon::CanReload()
+{
+	return AmmoCount < GetMaxAmmoAmount() && ClipCount>0;
+}
 
 void AWeapon::SimulateWeaponFire()
 {
@@ -213,7 +165,7 @@ void AWeapon::SimulateWeaponFire()
 	//开火动画
 	if (!bPlayingFiringAnim)
 	{
-		bPlayingFiringAnim = true;
+/*		bPlayingFiringAnim = true;*/
 		PlayMontageAnimation(FireAnim);
 	}
 	if (FireCameraShake)
@@ -224,23 +176,13 @@ void AWeapon::SimulateWeaponFire()
 			PC->ClientPlayCameraShake(FireCameraShake);
 		}
 	}
-
-}
-
-void AWeapon::StopSimulateWeaponFire()
-{
-	//todo
-	if (bPlayingFiringAnim)
-	{
-		bPlayingFiringAnim = false;
-		StopMontageAnimation(FireAnim);
-	}
 }
 
 void AWeapon::FireWeapon()
 {
 
 }
+
 UAudioComponent* AWeapon::PlayWeaponSound(USoundCue* FireSound)
 {
 	UAudioComponent* AC = nullptr;
@@ -266,215 +208,34 @@ int32 AWeapon::GetClipAmount() const
 	return ClipCount;
 }
 
-void AWeapon::CaculateEquipState()
+float AWeapon::GetFireCD()
 {
-	WeaponState::Type NewState = WeaponState::Idle;
-	if (bIsEquipped)
-	{
-		if (bWantToReload && CanRealod())
-		{
-			NewState = WeaponState::Reloading;
-		}
-		else 
-		{
-			if (bWantToFiring && CanFire())
-			{
-				NewState = WeaponState::Firing;
-			}
-			else
-			{
-				NewState = WeaponState::Idle;
-			}
-		}
-	}
-	else 
-	{
-		if (bWantToEquip)
-		{
-			NewState = WeaponState::Equiping;
-		}	
-	}
-//	UE_LOG(LogTemp, Warning, TEXT(" Caculate WeaponState"));
-	
-	SetWeaponState(NewState);
+	return WeaponConfig.FireCD;
 }
 
-void AWeapon::DependOnCurrentWeaponState()
+UAnimMontage* AWeapon::GetEquipAnim()
 {
-	if (PreWeaponState == WeaponState::Idle && CurWeaponState == WeaponState::Firing)
-	{
-		//处理开始开火
-		HandleStartFire();
-	}
-	else if(PreWeaponState == WeaponState::Firing && (CurWeaponState == WeaponState::Idle || CurWeaponState == WeaponState::Reloading))
-	{
-		//处理结束开火
-		HandleEndFire();
-	}
-
-	if ((PreWeaponState == WeaponState::Idle || PreWeaponState == WeaponState::Firing) && CurWeaponState == WeaponState::Reloading)
-	{
-		//开始装弹
-		HandleStartReload();
-	} 
-	else if(PreWeaponState == WeaponState::Reloading && CurWeaponState == WeaponState::Idle)
-	{
-		//结束装弹
-		HandleEndReload();
-	}
-
-	if (PreWeaponState == WeaponState::Idle && CurWeaponState == WeaponState::Equiping)
-	{
-		//开始更换装备
-		HandleStartEquip();
-	} 
-	else if(PreWeaponState == WeaponState::Equiping && CurWeaponState == WeaponState::Idle)
-	{
-		//结束更换装备
-		HandleEndEquip();
-	}
+	return EquipAnim.AnimP;
 }
 
-void AWeapon::SetWeaponState(WeaponState::Type NewWeaponState)
+UAnimMontage* AWeapon::GetReloadAnim()
 {
-	PreWeaponState = CurWeaponState;
-	CurWeaponState = NewWeaponState;
+	return ReloadAnim.AnimP;
 }
 
-bool AWeapon::CanFire() const
+USkeletalMeshComponent* AWeapon::GetMesh1P()
 {
-	bool LocalCanFire = PawnOwner && PawnOwner->CanFire();
-	return LocalCanFire;
+	return Mesh1P;
 }
 
-bool AWeapon::CanRealod()
+USoundCue* AWeapon::GetEquipSound()
 {
-	return (GetCurrentAmmoAmount() < GetMaxAmmoAmount())&&(ClipCount > 0);
+	return EquipSound;
 }
 
-void AWeapon::HandleStartFire()
+USoundCue* AWeapon::GetReloadSound()
 {
-	HandleFiring();
-}
-
-void AWeapon::HandleEndFire()
-{
-	StopSimulateWeaponFire();
-	bReFiring = false;
-	GetWorldTimerManager().ClearTimer(TimerHandle_HandleReFiring);
-
-
-}
-
-void AWeapon::HandleStartReload()
-{
-	float AnimDurTime = PlayMontageAnimation(ReloadAnim);
-
-	if (AnimDurTime<=0.f)
-	{
-		AnimDurTime = 0.5f;
-	}
-	//PlayAnim
-
-	GetWorldTimerManager().SetTimer( TimerHandle_StopReload, this, &AWeapon::StopReload, AnimDurTime, false);
-	GetWorldTimerManager().SetTimer( TimerHandle_ReloadWeapon, this, &AWeapon::ReloadWeapon, FMath::Max(0.1f, AnimDurTime - 0.1f), false);
-
-	if (PawnOwner)
-	{
-		PlayWeaponSound(ReloadSound);
-	}
-}
-
-void AWeapon::HandleEndReload()
-{
-	//停止动画
-	StopMontageAnimation(ReloadAnim);
-
-	GetWorldTimerManager().ClearTimer(TimerHandle_StopReload);
-	GetWorldTimerManager().ClearTimer( TimerHandle_ReloadWeapon);
-
-	AmmoCount = FMath::Min(AmmoCount+WeaponConfig.AmmoPerClip ,GetMaxAmmoAmount());
-	ClipCount--;
-//	UE_LOG(LogTemp, Warning, TEXT("ClipCount %d"), ClipCount);
-}
-
-void AWeapon::HandleStartEquip()
-{
-	AttachWeaponToPawn();
-
-	if (LastWeapon)	//换枪
-	{
-		float AnimDurTime = PlayMontageAnimation(EquipAnim);
-		//PlayAnim
-		if (AnimDurTime<=0.f)
-		{
-			AnimDurTime = 1.f;
-		}
-		GetWorldTimerManager().SetTimer(TimerHandle_OnEquipFinish, this, &AWeapon::OnEquipFinish, AnimDurTime, false);
-	}
-	else			//角色生成时进行
-	{
-		OnEquipFinish();
-	}
-	
-	if (PawnOwner)
-	{
-		PlayWeaponSound(EquipSound);
-	}
-	bIsEquipped = true;
-}
-
-void AWeapon::HandleEndEquip()
-{
-	GetWorldTimerManager().ClearTimer(TimerHandle_OnEquipFinish);
-
-	//停止武器动画
-	StopMontageAnimation(EquipAnim);
-}
-
-void AWeapon::OnEquipFinish()
-{
-	if (!bIsEquipped)
-	{
-		bIsEquipped = true;
-	}
-	if (bWantToEquip)
-	{
-		bWantToEquip = false;
-	}
-	CaculateEquipState();
-	DependOnCurrentWeaponState();
-}
-
-void AWeapon::StartReload()
-{
-	if (!bWantToReload && CanRealod())
-	{
-		bWantToReload = true;
-		CaculateEquipState();
-		DependOnCurrentWeaponState();
-//		UE_LOG(LogTemp, Warning, TEXT("StartReload"));
-	}
-}
-
-void AWeapon::StopReload()
-{
-	if (bWantToReload)
-	{
-		bWantToReload = false;
-		CaculateEquipState();
-		DependOnCurrentWeaponState();
-	}
-}
-
-void AWeapon::ReloadWeapon()
-{
-
-}
-
-WeaponState::Type AWeapon::GetCurrentWeaponState()
-{
-	return CurWeaponState;
+	return ReloadSound;
 }
 
 float AWeapon::PlayMontageAnimation(const FWeaponAnim Animation)
@@ -482,7 +243,7 @@ float AWeapon::PlayMontageAnimation(const FWeaponAnim Animation)
 	float during = 0.f;
 	if (PawnOwner)
 	{
-		UAnimMontage* UseMontage = Animation.Pawn1P;
+		UAnimMontage* UseMontage = Animation.AnimP;
 		if (UseMontage)
 		{
 			during = PawnOwner->PlayAnimMontage(UseMontage);
@@ -495,10 +256,15 @@ void AWeapon::StopMontageAnimation(const FWeaponAnim Animation)
 {
 	if (PawnOwner)
 	{
-		UAnimMontage* UseMontage = Animation.Pawn1P;
+		UAnimMontage* UseMontage = Animation.AnimP;
 		if (UseMontage)
 		{
 			PawnOwner->StopAnimMontage(UseMontage);
 		}
 	}
+}
+
+void AWeapon::OnGetClip(int32 Amount)
+{
+	ClipCount += Amount;
 }

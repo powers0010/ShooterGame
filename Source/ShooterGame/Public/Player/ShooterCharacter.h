@@ -8,6 +8,10 @@
 
 
 class AWeapon;
+class USniperTargetWidget;
+class UPickUpTip;
+class APickUpItem;
+class UMainWidget;
 
 
 UCLASS()
@@ -43,6 +47,16 @@ public:
 
 	virtual void StopAnimMontage(class UAnimMontage* AnimMontage  = NULL ) override;
 
+	virtual bool OnIncreaseHealth(float _in);
+
+	virtual bool OnGetWeapon(TSubclassOf<AWeapon> NewWeaponClass);
+
+	virtual bool OnGetClip(int32 Amount, TSubclassOf<AWeapon> WeaponClass);
+
+	virtual void Die(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
+
+	void SimulateBeAttacked();
+
 	USkeletalMeshComponent* GetPawnMesh();
 
 	//øÿ÷∆ ‰»Î
@@ -69,6 +83,7 @@ public:
 		void SetIsTargeting(bool NewIsTarget);
 
 	int32 GetCurHealth() const;
+
 	int32 GetMaxHealth() const;
 
 	AWeapon* GetCurrentWeapon();
@@ -76,36 +91,41 @@ public:
 	bool CanFire();
 
 	bool IsAlive();
+
+	void TraceForPickUpItem(/*FHitResult& HitResult*/);
+
+	void OnPickUp();
+
+	USniperTargetWidget* GetTargetWidget() const;
+
+	UPickUpTip* GetPickUpTipWidget() const;
+
+	void SetFOV(float _FOV);
+
+	UFUNCTION(BlueprintCallable, Category = "Widget")
+		void SetMainWidget(UMainWidget* widget);
+
+	UFUNCTION(BlueprintCallable, Category = "Widget")
+		UMainWidget* GetMainWidget();
+
+	UFUNCTION(BlueprintCallable, Category = "Level")
+		void AddDoorKeyAmout();
+
+	UFUNCTION(BlueprintCallable, Category = "Level")
+		void SubtractDoorKeyAmout();
+
+	UFUNCTION(BlueprintCallable, Category = "Level")
+		int32 GetDoorKeyAmout();
 protected:
-
-	/*UPROPERTY(EditAnywhere, category = "Camera")*/
-// 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-// 		class UCameraComponent* Camera1P;
-
 	/** The main skeletal mesh associated with this Character (optional sub-object). */
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-//	UPROPERTY(EditDefaultsOnly, Category = Character)
 		class USkeletalMeshComponent* Mesh1P;
 
-	UPROPERTY(EditDefaultsOnly , Category = Weapon )
-		TSubclassOf<AWeapon> WeaponClass;
-// 
- 	UPROPERTY(VisibleAnywhere, Category = Weapon)
- 		AWeapon* CurrentWeapon;
+	UPROPERTY(Category = Weapon, VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		class UWeaponSystemComponent* WeaponSysCom;
 
-	UPROPERTY(EditDefaultsOnly, Category = Inventory)
-		TArray<TSubclassOf<AWeapon>> DefaultInventorySystem;
-
-	UPROPERTY(Transient)
-		TArray<AWeapon*> Inventory;
-
-	void SpawnDefaultInventory();
-
-	void AddWeapon(AWeapon* NewWeapon);
-
-	void EquipWeapon(AWeapon* Weapon);
-
-	void SetCurrentWeapon(AWeapon* NewWeapon, AWeapon* LastWeapon);
+	UPROPERTY(EditDefaultsOnly, Category = MainWidget)
+		UMainWidget* MainWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 		FName WeaponAttachPoint;
@@ -113,6 +133,22 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 		bool bIsTargeting;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Health)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Health)
 		float Health;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+		float RangeOfFocusOn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Target)
+		USniperTargetWidget* SniperTargetWideget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PickUp)
+		UPickUpTip* PickUpTip;
+
+	UPROPERTY(EditDefaultsOnly, Category = Attack)
+		TSubclassOf<UCameraShake> BeHitCameraShake;
+
+	APickUpItem* FocusOnItem;
+
+	int32 DoorKeyAmount;
 };

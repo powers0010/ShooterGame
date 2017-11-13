@@ -8,6 +8,13 @@
 #include "ShooterGame.h"
 #include "Weapon.h"
 #include "ShooterPlayerController.h"
+#include "WeaponSystemComponent.h"
+#include "PickUpItem.h"
+#include "SniperTargetWidget.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Runtime/UMG/Public/Components/TextBlock.h"
+#include "MainWidget.h"
+
 
 
 // Sets default values
@@ -19,7 +26,10 @@ AShooterCharacter::AShooterCharacter():Health(1000)
 // 	Camera1P = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera1P"));
 // 	Camera1P->SetupAttachment(GetCapsuleComponent());
 // 	Camera1P->SetRelativeLocation(FVector(0.f, 0.f, BaseEyeHeight));
-	
+
+	//武器系统
+	WeaponSysCom = CreateDefaultSubobject<UWeaponSystemComponent>(TEXT("WeaponSystemCom"));
+		
 	//Mesh碰撞	//第三人称模型
 	//自己不可见 //不接受 贴花投射
 	GetMesh()->bOnlyOwnerSee = false;
@@ -57,37 +67,36 @@ AShooterCharacter::AShooterCharacter():Health(1000)
 	//	Mesh1P->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 
 	bIsTargeting = false;
+	SniperTargetWideget = nullptr;
+	FocusOnItem = nullptr;
+	RangeOfFocusOn = 500.f;
+	DoorKeyAmount = 0;
 }
 
 // Called when the game starts or when spawned
 void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
 void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	TraceForPickUpItem();
 
 }
 
 void AShooterCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	//构造武器绑定
-// 	FActorSpawnParameters SpawnParameter;
-// 	SpawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-// 	CurrentWeapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass, SpawnParameter);
-// 	if (CurrentWeapon)
-// 	{
-// 		CurrentWeapon->SetPawnOwner(this);
-// //		CurrentWeapon->AttachWeaponToPawn();
-// 		CurrentWeapon->OnEquip(nullptr);
-// 		CurrentWeapon->Instigator = this;
-// 	}
-	SpawnDefaultInventory();
+
+	if (WeaponSysCom)
+	{
+		WeaponSysCom->SetPawnOwner(this);
+		WeaponSysCom->CreateDefaultWeaponAtGameStart();
+	}
 }
 
 void AShooterCharacter::OnCameraUpdata(const FVector& CameraLocation, const FRotator& CameraRotation)
@@ -139,6 +148,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Released, this, &AShooterCharacter::OnStopFire);
 	PlayerInputComponent->BindAction(TEXT("Reload"), IE_Pressed, this, &AShooterCharacter::OnReload);
 	PlayerInputComponent->BindAction(TEXT("Equip"), IE_Pressed, this, &AShooterCharacter::OnEquip);
+	PlayerInputComponent->BindAction(TEXT("PickUp"), IE_Pressed, this, &AShooterCharacter::OnPickUp);
+
 
 }
 
@@ -146,8 +157,9 @@ void AShooterCharacter::MoveForward(float value)
 {
 	if (Controller)
 	{
-		bool bLimitRotation = GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling();
-		FRotator Rotator = bLimitRotation ? GetActorRotation() : GetControlRotation();
+ 		bool bLimitRotation = GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling();
+ 		FRotator Rotator = bLimitRotation ? GetActorRotation() : GetControlRotation();
+//		FRotator Rotator = GetControlRotation();
 		FVector Direction = FRotationMatrix(Rotator).GetScaledAxis(EAxis::X);
 		AddMovementInput(Direction, value);
 	}
@@ -156,9 +168,9 @@ void AShooterCharacter::MoveRight(float value)
 {
 	if (Controller)
 	{
-		//		bool bLimitRotation = GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling();
-		//		FRotator Rotator = bLimitRotation ? GetActorRotation() : GetControlRotation();
-		FRotator Rotator = GetActorRotation();
+		bool bLimitRotation = GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling();
+		FRotator Rotator = bLimitRotation ? GetActorRotation() : GetControlRotation();
+	//	FRotator Rotator = GetActorRotation();
 		FVector Direction = FRotationMatrix(Rotator).GetScaledAxis(EAxis::Y);
 		AddMovementInput(Direction, value);
 	}
@@ -170,25 +182,32 @@ void AShooterCharacter::OnStartTarget()
 	{
 		SetIsTargeting(true);
 	}
-	
+	if (WeaponSysCom)
+	{
+		WeaponSysCom->OnStartTarget();
+	}	
 }
 void AShooterCharacter::OnEndTarget()
 {
 	SetIsTargeting(false);
+	if (WeaponSysCom)
+	{
+		WeaponSysCom->OnStopTarget();
+	}
 }
 
 void AShooterCharacter::OnStartFire()
 {
-	if (CurrentWeapon)
+	if (WeaponSysCom)
 	{
-		CurrentWeapon->StartFire();
+		WeaponSysCom->OnStartFire();
 	}
 }
 void AShooterCharacter::OnStopFire()
 {
-	if (CurrentWeapon)
+	if (WeaponSysCom)
 	{
-		CurrentWeapon->StopFire();
+		WeaponSysCom->OnStopFire();
 	}
 }
 
@@ -197,27 +216,56 @@ void AShooterCharacter::OnReload()
 	AShooterPlayerController* MyController = Cast<AShooterPlayerController>(GetController());
 	if (MyController)
 	{
-		if (CurrentWeapon)
-		{
-			CurrentWeapon->StartReload();
-//			UE_LOG(LogTemp, Warning, TEXT("OnReload"));
-		}
+		WeaponSysCom->OnReload();
 	}
 }
 
 void AShooterCharacter::OnEquip()
 {
 	AShooterPlayerController* MyController = Cast<AShooterPlayerController>(GetController());
-	if (MyController)
+	if (MyController && WeaponSysCom)
 	{
-		if (Inventory.Num()>0 && CurrentWeapon && CurrentWeapon->GetCurrentWeaponState() != WeaponState::Equiping)
-		{
-			const int32 CurrentWeaponIndex = Inventory.IndexOfByKey(CurrentWeapon);
-			const int32 NextWeaponIndex = (CurrentWeaponIndex + 1) % Inventory.Num();
-			AWeapon* NextWeapon = Inventory[NextWeaponIndex];
+		WeaponSysCom->OnEquip();
+	}
+}
 
-			EquipWeapon(NextWeapon);
-		}
+void AShooterCharacter::OnPickUp()
+{
+// 	if (FocusOnItem)
+// 	{
+// 		FocusOnItem->OnPickUp(this);
+// 	}
+// 	FHitResult HitResult(ForceInit);
+// 	TraceForPickUpItem(HitResult);
+// 	if (HitResult.bBlockingHit)
+// 	{
+// 		APickUpItem* PickUpItem = Cast<APickUpItem>(HitResult.GetActor());
+// 		if (PickUpItem)
+// 		{
+// 			PickUpItem->ShowItemInfoWidget();
+// 			UE_LOG(LogTemp, Warning, TEXT("PickUp1"));
+// 		}
+// 	}
+}
+
+void AShooterCharacter::TraceForPickUpItem(/*FHitResult& HitResult */)
+{
+	FVector StartLocation;
+	FRotator AimRotation;
+	GetController()->GetPlayerViewPoint(StartLocation, AimRotation);
+
+	FHitResult LocalHitResult(ForceInit);
+// 	static FName Tracetag = FName(TEXT("Tracetag"));
+// 	FCollisionQueryParams HitInfo(Tracetag, false, Instigator);
+// 	HitInfo.bTraceAsyncScene = true;
+// 	HitInfo.bReturnPhysicalMaterial = true;
+//	GetWorld()->DebugDrawTraceTag = Tracetag;
+	GetWorld()->LineTraceSingleByChannel(LocalHitResult, StartLocation, StartLocation + RangeOfFocusOn*AimRotation.Vector(), COLLISION_PICKUP/*, HitInfo*/);
+
+	FocusOnItem = LocalHitResult.IsValidBlockingHit() ? Cast<APickUpItem>(LocalHitResult.GetActor()) : nullptr;
+	if (FocusOnItem)
+	{
+		FocusOnItem->OnFocusOn();
 	}
 }
 
@@ -257,10 +305,43 @@ float AShooterCharacter::TakeDamage(float Damage, struct FDamageEvent const& Dam
 	if (ActualDamage>0.f)
 	{
  		Health -= ActualDamage;
-//		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
+		if (Health<0.f)
+		{
+			Die(ActualDamage, DamageEvent, EventInstigator, DamageCauser);
+		}
+		else
+		{
+			SimulateBeAttacked();
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
  	}
 
 	return ActualDamage;
+}
+
+void AShooterCharacter::SimulateBeAttacked()
+{
+	//Camera Shake
+	if (BeHitCameraShake)
+	{
+		AShooterPlayerController* PC = Cast<AShooterPlayerController>(GetController());
+		if (PC && PC->IsLocalController())
+		{
+			PC->ClientPlayCameraShake(BeHitCameraShake);
+		}
+	}
+
+	//屏幕溅血效果
+	if (MainWidget)
+	{
+		MainWidget->AddBeHitImageToView();
+	}
+}
+
+void AShooterCharacter::Die(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Health = 0.f;
+	UE_LOG(LogTemp, Warning, TEXT("I am Die"));
 }
 
 float AShooterCharacter::PlayAnimMontage(class UAnimMontage* AnimMontage, float InPlayRate , FName StartSectionName)
@@ -299,7 +380,7 @@ int32 AShooterCharacter::GetMaxHealth() const
 
 AWeapon* AShooterCharacter::GetCurrentWeapon()
 {
-	return CurrentWeapon ? CurrentWeapon : nullptr;
+	return WeaponSysCom && WeaponSysCom->GetCurrentWeapon() ? WeaponSysCom->GetCurrentWeapon() : nullptr;
 }
 
 bool AShooterCharacter::CanFire()
@@ -312,73 +393,89 @@ bool AShooterCharacter::IsAlive()
 	return Health > 0;
 }
 
-void AShooterCharacter::SpawnDefaultInventory()
+USniperTargetWidget* AShooterCharacter::GetTargetWidget() const
 {
-	int32 NumOfDefaultInventory = DefaultInventorySystem.Num();
-	for (int32 i = 0;i< NumOfDefaultInventory; i++)
+	return SniperTargetWideget;
+}
+
+void AShooterCharacter::SetFOV(float _FOV)
+{
+	if (Controller->IsLocalController())
 	{
-		if (DefaultInventorySystem[i])
+		APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(this, 0);
+		CameraManager->SetFOV(_FOV);
+	}
+}
+
+bool AShooterCharacter::OnIncreaseHealth(float _in)
+{
+	if (IsAlive() && Health<GetMaxHealth())
+	{
+		Health = FMath::Min(Health + _in, (float)GetMaxHealth());
+		return true;
+	}
+	return false;
+}
+
+bool AShooterCharacter::OnGetWeapon(TSubclassOf<AWeapon> NewWeaponClass)
+{
+	AShooterPlayerController* MyController = Cast<AShooterPlayerController>(GetController());
+	if (MyController && WeaponSysCom && WeaponSysCom->OnGetWeapon(NewWeaponClass))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool AShooterCharacter::OnGetClip(int32 Amount , TSubclassOf<AWeapon> WeaponClass)
+{
+	if (WeaponSysCom && WeaponSysCom->OnGetClip(Amount , WeaponClass))
+	{
+		return true;
+	}
+	return false;
+}
+
+UPickUpTip* AShooterCharacter::GetPickUpTipWidget() const
+{
+	return PickUpTip;
+}
+
+void AShooterCharacter::SetMainWidget(UMainWidget* widget)
+{
+	if (widget)
+	{
+		MainWidget = widget;
+	}
+}
+
+UMainWidget* AShooterCharacter::GetMainWidget()
+{
+	return MainWidget;
+}
+
+void AShooterCharacter::AddDoorKeyAmout()
+{
+	DoorKeyAmount++;
+	if (MainWidget)
+	{
+		MainWidget->UpdataSetDoorKeyAmout(DoorKeyAmount);
+	}
+}
+
+void AShooterCharacter::SubtractDoorKeyAmout()
+{
+	if (DoorKeyAmount>0)
+	{
+		DoorKeyAmount--;
+		if (MainWidget)
 		{
-			FActorSpawnParameters SpawnInfo;
-			SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			AWeapon* NewWeapon = GetWorld()->SpawnActor<AWeapon>(DefaultInventorySystem[i], SpawnInfo);
-			if (NewWeapon)
-			{
-				AddWeapon(NewWeapon);
-			}
+			MainWidget->UpdataSetDoorKeyAmout(DoorKeyAmount);
 		}
 	}
-
-	if (Inventory.Num()>0)
-	{
-		CurrentWeapon = Inventory[0];
-		CurrentWeapon->OnEquip(nullptr);
-	}
 }
 
-void AShooterCharacter::AddWeapon(AWeapon* NewWeapon)
+int32 AShooterCharacter::GetDoorKeyAmout()
 {
-	if (NewWeapon)
-	{
-		NewWeapon->SetPawnOwner(this);
-		NewWeapon->Instigator = Instigator;
-		Inventory.AddUnique(NewWeapon);
-	}
-}
-
-void AShooterCharacter::EquipWeapon(AWeapon* Weapon)
-{
-	if (Weapon)
-	{
-		SetCurrentWeapon(Weapon,CurrentWeapon);
-	}
-}
-
-void AShooterCharacter::SetCurrentWeapon(AWeapon* NewWeapon, AWeapon* LastWeapon)
-{
-	AWeapon* LocalWeapon = nullptr;
-
-	if (LastWeapon)
-	{
-		LocalWeapon = LastWeapon;
-	}
-	else if (NewWeapon!= CurrentWeapon)
-	{
-		LocalWeapon = CurrentWeapon;
-	}
-
-	if (LocalWeapon)
-	{
-		//卸载武器
-		LocalWeapon->OnUnEquip();
-	}
-	CurrentWeapon = NewWeapon;
-
-	if (NewWeapon)
-	{
-		NewWeapon->SetPawnOwner(this);
-		NewWeapon->Instigator = Instigator;
-		NewWeapon->OnEquip(LastWeapon);
-	}
-
+	return DoorKeyAmount;
 }

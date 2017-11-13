@@ -7,6 +7,7 @@
 #include "ShooterImpactEffect.h"
 
 
+
 void AWeapon_Instant::FireWeapon()
 {
 	//计算子弹发射方向
@@ -15,18 +16,19 @@ void AWeapon_Instant::FireWeapon()
 
 	const float CurrentSpread = InstantWeaponConfig.WeaponSpreed;
 	const float CurrentHalfAngle = FMath::DegreesToRadians(CurrentSpread / 2.f);
-	const FVector AimDie = GetAdjustAim();
-
-	const FVector ShootDir = WeaponRandomStream.VRandCone(AimDie,0,0/*CurrentHalfAngle, CurrentHalfAngle*/);
+	const FVector AimDir = GetAdjustAim();
+	
+//	UE_LOG(LogTemp, Warning, TEXT("Rotation: %s "), *AimDir.ToString());
+//	const FVector ShootDir = WeaponRandomStream.VRandCone(AimDie,0,0/*CurrentHalfAngle, CurrentHalfAngle*/);
 
 	//伤害对象
 	const FVector StartLocation = GetMuzzleLocation();
 	const float DamageRange = InstantWeaponConfig.WeaponRange;
 
-	const FHitResult HitResult = WeaponTrace(StartLocation, StartLocation + DamageRange*ShootDir);
+	const FHitResult HitResult = WeaponTrace(StartLocation, StartLocation + DamageRange*AimDir);
 
 	//伤害处理
-	ProcessInstantHit(HitResult, StartLocation, ShootDir, RandomSeed, CurrentSpread);
+	ProcessInstantHit(HitResult, StartLocation, AimDir, RandomSeed, CurrentSpread);
 //	UE_LOG(LogTemp, Warning, TEXT("Fire Weapon"));
 }
 
@@ -88,6 +90,7 @@ void AWeapon_Instant::SpawnImpactEffects(const FHitResult& Impact)
 		AShooterImpactEffect* ImpactEffect = GetWorld()->SpawnActorDeferred<AShooterImpactEffect>(ImpactEffectActor, SpawnTrans);
 		if (ImpactEffect)
 		{
+			ImpactEffect->SetHitResult(Impact);
 			UGameplayStatics::FinishSpawningActor(ImpactEffect, SpawnTrans);
 //			UE_LOG(LogTemp, Warning, TEXT("FinishSpawningActor ImpactEffect"));
 		}

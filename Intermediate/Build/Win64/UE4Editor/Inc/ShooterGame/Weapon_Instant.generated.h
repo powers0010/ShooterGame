@@ -13,14 +13,14 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define SHOOTERGAME_Weapon_Instant_generated_h
 
-#define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_19_GENERATED_BODY \
+#define ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_19_GENERATED_BODY \
 	friend SHOOTERGAME_API class UScriptStruct* Z_Construct_UScriptStruct_FInstantWeaponData(); \
 	SHOOTERGAME_API static class UScriptStruct* StaticStruct();
 
 
-#define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_RPC_WRAPPERS
-#define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_RPC_WRAPPERS_NO_PURE_DECLS
-#define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_INCLASS_NO_PURE_DECLS \
+#define ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_RPC_WRAPPERS
+#define ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_RPC_WRAPPERS_NO_PURE_DECLS
+#define ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesAWeapon_Instant(); \
 	friend SHOOTERGAME_API class UClass* Z_Construct_UClass_AWeapon_Instant(); \
@@ -30,7 +30,7 @@ public: \
 	enum {IsIntrinsic=COMPILED_IN_INTRINSIC};
 
 
-#define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_INCLASS \
+#define ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_INCLASS \
 private: \
 	static void StaticRegisterNativesAWeapon_Instant(); \
 	friend SHOOTERGAME_API class UClass* Z_Construct_UClass_AWeapon_Instant(); \
@@ -40,7 +40,7 @@ public: \
 	enum {IsIntrinsic=COMPILED_IN_INTRINSIC};
 
 
-#define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_STANDARD_CONSTRUCTORS \
+#define ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API AWeapon_Instant(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(AWeapon_Instant) \
@@ -53,7 +53,7 @@ private: \
 public:
 
 
-#define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_ENHANCED_CONSTRUCTORS \
+#define ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_ENHANCED_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API AWeapon_Instant() { }; \
 private: \
@@ -66,37 +66,37 @@ DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(AWeapon_Instant); \
 	DEFINE_DEFAULT_CONSTRUCTOR_CALL(AWeapon_Instant)
 
 
-#define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_PRIVATE_PROPERTY_OFFSET \
+#define ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_PRIVATE_PROPERTY_OFFSET \
 	FORCEINLINE static uint32 __PPO__InstantWeaponConfig() { return STRUCT_OFFSET(AWeapon_Instant, InstantWeaponConfig); } \
 	FORCEINLINE static uint32 __PPO__TrailTargetParam() { return STRUCT_OFFSET(AWeapon_Instant, TrailTargetParam); } \
 	FORCEINLINE static uint32 __PPO__ImpactEffectActor() { return STRUCT_OFFSET(AWeapon_Instant, ImpactEffectActor); }
 
 
-#define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_35_PROLOG
-#define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_GENERATED_BODY_LEGACY \
+#define ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_35_PROLOG
+#define ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_PRIVATE_PROPERTY_OFFSET \
-	ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_RPC_WRAPPERS \
-	ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_INCLASS \
-	ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_STANDARD_CONSTRUCTORS \
+	ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_PRIVATE_PROPERTY_OFFSET \
+	ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_RPC_WRAPPERS \
+	ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_INCLASS \
+	ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_GENERATED_BODY \
+#define ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_PRIVATE_PROPERTY_OFFSET \
-	ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_RPC_WRAPPERS_NO_PURE_DECLS \
-	ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_INCLASS_NO_PURE_DECLS \
-	ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_ENHANCED_CONSTRUCTORS \
+	ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_PRIVATE_PROPERTY_OFFSET \
+	ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_RPC_WRAPPERS_NO_PURE_DECLS \
+	ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_INCLASS_NO_PURE_DECLS \
+	ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h_38_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID ShooterGame_Source_ShooterGame_Public_Weapon_Weapon_Instant_h
+#define CURRENT_FILE_ID ShooterGame_2_20171101_Source_ShooterGame_Public_Weapon_Weapon_Instant_h
 
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
